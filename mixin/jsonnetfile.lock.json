@@ -8,7 +8,7 @@
           "subdir": "grafonnet"
         }
       },
-      "version": "30280196507e0fe6fa978a3e0eaca3a62844f817",
+      "version": "a1d61cce1da59c71409b99b5c7568511fec661ea",
       "sum": "342u++/7rViR/zj2jeJOjshzglkZ1SY+hFNuyCBFMdc="
     },
     {
@@ -18,8 +18,18 @@
           "subdir": "grafana-builder"
         }
       },
-      "version": "e28351f90392729c658009619c6faa25df2e4fa7",
-      "sum": "tDR6yT2GVfw0wTU12iZH+m01HrbIr6g/xN+/8nzNkU0="
+      "version": "4418ed40c9082ba99c688ccbd64334cf8fd834ed",
+      "sum": "FqEJAICz9T90PMJLW8i4HXazyWQPNzi68A8UauXa7GQ="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/grafana/jsonnet-libs.git",
+          "subdir": "mixin-utils"
+        }
+      },
+      "version": "4418ed40c9082ba99c688ccbd64334cf8fd834ed",
+      "sum": "zVkvwae4zHP6xeIoDvde/wldI6ClprFjnk50mMD9/z4="
     },
     {
       "source": {
@@ -28,8 +38,8 @@
           "subdir": "snmp-mixin"
         }
       },
-      "version": "e28351f90392729c658009619c6faa25df2e4fa7",
-      "sum": "y4oNILEEFGt/Dib/GtrGLFIDIPvLz6gR7oIrwPdCzZ0="
+      "version": "4418ed40c9082ba99c688ccbd64334cf8fd834ed",
+      "sum": "WvahPiiQ5LtzkVU+TIxFhryJoKMPGa5zZKNJRNgYfL8="
     }
   ],
   "legacyImports": false
