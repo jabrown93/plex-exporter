@@ -4,11 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"time"
 
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/gorilla/websocket"
 )
 
@@ -19,7 +18,7 @@ var (
 type plexListener struct {
 	server         *Server
 	activeSessions *sessions
-	log            log.Logger
+	log            *slog.Logger
 }
 
 // websocketNotification is the payload of a Plex websocket message.
@@ -27,7 +26,7 @@ type websocketNotification struct {
 	NotificationContainer NotificationContainer `json:"NotificationContainer"`
 }
 
-func (s *Server) Listen(ctx context.Context, log log.Logger) error {
+func (s *Server) Listen(ctx context.Context, log *slog.Logger) error {
 	s.mtx.Lock()
 	if s.listener != nil {
 		s.mtx.Unlock()
@@ -64,7 +63,7 @@ func (s *Server) Listen(ctx context.Context, log log.Logger) error {
 		conn.Close()
 	}()
 
-	level.Info(log).Log("msg", "Successfully connected", "machineID", s.ID, "server", s.Name)
+	log.Info("Successfully connected", "machineID", s.ID, "server", s.Name)
 
 	for {
 		var notification websocketNotification
@@ -76,7 +75,7 @@ func (s *Server) Listen(ctx context.Context, log log.Logger) error {
 			if errors.As(err, &closeErr) && closeErr.Code == websocket.CloseNormalClosure {
 				return nil
 			}
-			level.Error(log).Log("msg", "error in websocket processing", "err", err)
+			log.Error("error in websocket processing", "err", err)
 			return err
 		}
 
@@ -98,7 +97,7 @@ func getSessionByID(sessions CurrentSessions, sessionID string) *Metadata {
 func (l *plexListener) onPlayingHandler(c NotificationContainer) {
 	err := l.onPlaying(c)
 	if err != nil {
-		level.Error(l.log).Log("msg", "error handling OnPlaying event", "event", c, "err", err)
+		l.log.Error("error handling OnPlaying event", "event", c, "err", err)
 	}
 }
 
@@ -125,7 +124,7 @@ func (l *plexListener) onPlaying(c NotificationContainer) error {
 			return fmt.Errorf("error fetching metadata for key %s: %w", n.RatingKey, err)
 		}
 
-		level.Info(l.log).Log("msg", "Received PlaySessionStateNotification",
+		l.log.Info("Received PlaySessionStateNotification",
 			"SessionKey", n.SessionKey,
 			"userName", session.User.Title,
 			"userID", session.User.ID,

@@ -3,14 +3,13 @@ package main
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	kitlog "github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/grafana/plexporter/pkg/metrics"
@@ -22,7 +21,7 @@ const (
 )
 
 var (
-	log = kitlog.NewLogfmtLogger(kitlog.NewSyncWriter(os.Stderr))
+	log = slog.New(slog.NewTextHandler(os.Stderr, nil))
 )
 
 func main() {
@@ -31,19 +30,19 @@ func main() {
 
 	serverAddress := os.Getenv("PLEX_SERVER")
 	if serverAddress == "" {
-		level.Error(log).Log("msg", "PLEX_SERVER environment variable must be specified")
+		log.Error("PLEX_SERVER environment variable must be specified")
 		os.Exit(1)
 	}
 
 	plexToken := os.Getenv("PLEX_TOKEN")
 	if plexToken == "" {
-		level.Error(log).Log("msg", "PLEX_TOKEN environment variable must be specified")
+		log.Error("PLEX_TOKEN environment variable must be specified")
 		os.Exit(1)
 	}
 
 	server, err := plex.NewServer(serverAddress, plexToken)
 	if err != nil {
-		level.Error(log).Log("msg", "cannot initialize connection to plex server", "error", err)
+		log.Error("cannot initialize connection to plex server", "error", err)
 		os.Exit(1)
 	}
 
@@ -60,25 +59,25 @@ func main() {
 	}
 
 	go func() {
-		level.Info(log).Log("msg", "starting metrics server on "+MetricsServerAddr)
+		log.Info("starting metrics server on " + MetricsServerAddr)
 		err = metricsServer.ListenAndServe()
 		if !errors.Is(err, http.ErrServerClosed) {
-			level.Error(log).Log("msg", "cannot start metrics server", "error", err)
+			log.Error("cannot start metrics server", "error", err)
 		}
 	}()
 
 	exitCode := 0
 	err = server.Listen(ctx, log)
 	if err != nil {
-		level.Error(log).Log("msg", "cannot listen to plex server events", "error", err)
+		log.Error("cannot listen to plex server events", "error", err)
 		exitCode = 1
 	}
 
-	level.Debug(log).Log("msg", "shutting down metrics server")
+	log.Debug("shutting down metrics server")
 	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer shutdownCancel()
 	if err := metricsServer.Shutdown(shutdownCtx); err != nil {
-		level.Error(log).Log("msg", "cannot gracefully shutdown metrics server", "error", err)
+		log.Error("cannot gracefully shutdown metrics server", "error", err)
 	}
 
 	os.Exit(exitCode)
