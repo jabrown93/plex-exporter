@@ -4,26 +4,9 @@ github.com/beorn7/perks/quantile
 # github.com/cespare/xxhash/v2 v2.3.0
 ## explicit; go 1.11
 github.com/cespare/xxhash/v2
-# github.com/go-kit/log v0.2.1
-## explicit; go 1.17
-github.com/go-kit/log
-github.com/go-kit/log/level
-# github.com/go-logfmt/logfmt v0.5.1
-## explicit; go 1.17
-github.com/go-logfmt/logfmt
-# github.com/golang/protobuf v1.5.2
-## explicit; go 1.9
-# github.com/google/uuid v1.6.0
-## explicit
-github.com/google/uuid
 # github.com/gorilla/websocket v1.5.3
 ## explicit; go 1.12
 github.com/gorilla/websocket
-# github.com/jrudio/go-plex-client v0.0.0-20250127195314-943dc7a39f7c => github.com/jsclayton/go-plex-client v0.0.0-20230428232959-d53064b6f34a
-## explicit; go 1.12
-github.com/jrudio/go-plex-client
-# github.com/matttproud/golang_protobuf_extensions v1.0.1
-## explicit
 # github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822
 ## explicit
 github.com/munnerz/goautoneg
@@ -83,4 +66,3 @@ google.golang.org/protobuf/reflect/protoregistry
 google.golang.org/protobuf/runtime/protoiface
 google.golang.org/protobuf/runtime/protoimpl
 google.golang.org/protobuf/types/known/timestamppb
-# github.com/jrudio/go-plex-client => github.com/jsclayton/go-plex-client v0.0.0-20230428232959-d53064b6f34a
