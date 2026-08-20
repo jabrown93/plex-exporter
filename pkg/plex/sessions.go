@@ -6,7 +6,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/jrudio/go-plex-client"
 	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/grafana/plexporter/pkg/metrics"
@@ -29,8 +28,8 @@ const (
 )
 
 type session struct {
-	session        plex.Metadata
-	media          plex.Metadata
+	session        Metadata
+	media          Metadata
 	state          sessionState
 	lastUpdate     time.Time
 	playStarted    time.Time
@@ -77,7 +76,7 @@ func (s *sessions) pruneOldSessions() {
 	}
 }
 
-func (s *sessions) Update(sessionID string, newState sessionState, newSession *plex.Metadata, media *plex.Metadata) {
+func (s *sessions) Update(sessionID string, newState sessionState, newSession *Metadata, media *Metadata) {
 	s.mtx.Lock()
 	defer s.mtx.Unlock()
 
@@ -197,7 +196,7 @@ func (s *sessions) Collect(ch chan<- prometheus.Metric) {
 		s.server.ID)
 }
 
-func labels(m plex.Metadata) (title, season, episodeTitle string) {
+func labels(m Metadata) (title, season, episodeTitle string) {
 	if m.Type == mediaTypeEpisode {
 		return m.GrandparentTitle, m.ParentTitle, m.Title
 	}
