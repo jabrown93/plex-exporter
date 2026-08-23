@@ -2,5 +2,12 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>jabrown93/.github:renovate-config"
+  ],
+  "packageRules": [
+    {
+      "description": "Never digest-pin the jsonnet-bundler deps in mixin/jsonnetfile.json. The shared preset sets pinDigests:true, so Renovate resolves a commit SHA for each dep and then tries to write it back into jsonnetfile.json -- but that file carries only `\"version\": \"master\"` and no digest field at all, because jsonnet-bundler keeps resolved SHAs in the SEPARATE jsonnetfile.lock.json. There is nothing for autoreplace to substitute, so the write silently no-ops and the update throws: `Digest is not updated (depName=github.com/grafana/grafonnet-lib/grafonnet, expectedValue=a1d61cce1da59c71409b99b5c7568511fec661ea)`, immediately followed by `Error updating branch: update failure`. Because rangeStrategy=pin groups every pin into one renovate/pin-dependencies branch, that failure was also discarding the alpine base-image pin in cmd/prometheus-plex-exporter/Dockerfile, which had already logged `Contents updated` in the same run. Same class of bug as the uses-with rule in the shared preset: a resolvable digest with no syntax to write it into. Expressed as pinDigests:false rather than enabled:false because only the former actually suppresses the update -- a packageRule matching updateType pinDigest with enabled:false still emits it. Scoped to the manager, so ordinary version updates for these deps still flow. Reproducibility is unaffected: jsonnetfile.lock.json already pins both deps to exact SHAs, which is jsonnet-bundler's own pinning mechanism. The real fix is migrating the mixin off grafana/grafonnet-lib, which Grafana ARCHIVED in favour of grafana/grafonnet; until someone does that work, this keeps one dead upstream from blocking every other pin in the repo.",
+      "matchManagers": ["jsonnet-bundler"],
+      "pinDigests": false
+    }
   ]
 }
